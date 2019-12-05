@@ -23,15 +23,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        loading.visibility =  View.VISIBLE
 
         container = findViewById(R.id.linearLayout)
 
-        click_me_button.setOnClickListener {
-            Toast.makeText(this,"clicked",Toast.LENGTH_LONG).show()
-            if(loading.visibility == View.GONE)
-                loading.visibility =   View.VISIBLE
-            else
-                loading.visibility =  View.GONE
+//        click_me_button.setOnClickListener {
+//            Toast.makeText(this,"clicked",Toast.LENGTH_LONG).show()
+//            if(loading.visibility == View.GONE)
+//                loading.visibility =   View.VISIBLE
+//            else
+//                loading.visibility =  View.GONE
 
 val request = NetworkRequest()
             val call: Call<NetworkResult> = request.bookService.requestBooks()
@@ -40,25 +41,25 @@ val request = NetworkRequest()
 
                 override fun onFailure(call: Call<NetworkResult>, t: Throwable) {
                     loading.visibility =  View.GONE
+//                    click_me_button.visibility
                     Log.d("error", t.localizedMessage)
 
                 }
 
                 override fun onResponse(call: Call<NetworkResult>, response: Response<NetworkResult>) {
                     loading.visibility =  View.GONE
-                    click_me_button.visibility  = View.GONE
+//                    click_me_button.visibility  = View.GONE
                     addTextView("status code ${response.code()}")
                     val totalResults = response.body()?.num_results
                     addTextView("Total results=${totalResults.toString()}")
                     response.body()?.results?.books?.forEach {
                         addTextView("${it.rank} | ${it.title}")
                     }
-                    Log.d("result", response.body()?.results?.books.toString()
-                    )
+
                 }
 
             })
-        }
+//        }
     }
 
 
