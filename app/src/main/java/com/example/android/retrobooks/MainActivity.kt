@@ -3,6 +3,7 @@ package com.example.android.retrobooks
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -23,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val actionBar = supportActionBar
+        actionBar!!.title = "Retro Books"
+
         loading.visibility =  View.VISIBLE
 
         container = findViewById(R.id.linearLayout)
@@ -62,7 +67,12 @@ val request = NetworkRequest()
 //        }
     }
 
-
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu to use in the action bar
+        val inflater = menuInflater
+        inflater.inflate(R.menu.action_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
     private fun addTextView(label: String) {
         val view = TextView(this)

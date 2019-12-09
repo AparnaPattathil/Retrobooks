@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Retro books</string>
+    <string name="action_refresh">refresh</string>
+
 </resources>
