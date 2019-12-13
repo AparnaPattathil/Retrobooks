@@ -8,10 +8,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun newRequest(): Unit {
+    fun newRequest() {
         val request = NetworkRequest()
         val call: Call<NetworkResult> = request.bookService.requestBooks()
 
