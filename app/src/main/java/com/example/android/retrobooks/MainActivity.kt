@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -28,53 +29,58 @@ class MainActivity : AppCompatActivity() {
         val actionBar = supportActionBar
         actionBar!!.title = "Retro Books"
 
-        loading.visibility =  View.VISIBLE
+        loading.visibility = View.VISIBLE
 
         container = findViewById(R.id.linearLayout)
+        newRequest()
 
-//        click_me_button.setOnClickListener {
-//            Toast.makeText(this,"clicked",Toast.LENGTH_LONG).show()
-//            if(loading.visibility == View.GONE)
-//                loading.visibility =   View.VISIBLE
-//            else
-//                loading.visibility =  View.GONE
+    }
 
-val request = NetworkRequest()
-            val call: Call<NetworkResult> = request.bookService.requestBooks()
+    fun newRequest(): Unit {
+        val request = NetworkRequest()
+        val call: Call<NetworkResult> = request.bookService.requestBooks()
 
-            call.enqueue(object : Callback<NetworkResult>{
+        call.enqueue(object : Callback<NetworkResult> {
 
-                override fun onFailure(call: Call<NetworkResult>, t: Throwable) {
-                    loading.visibility =  View.GONE
-//                    click_me_button.visibility
-                    Log.d("error", t.localizedMessage)
+            override fun onFailure(call: Call<NetworkResult>, t: Throwable) {
 
+                Log.d("error", t.localizedMessage)
+
+            }
+
+            override fun onResponse(call: Call<NetworkResult>, response: Response<NetworkResult>) {
+                loading.visibility =View.GONE
+                addTextView("status code ${response.code()}")
+                val totalResults = response.body()?.num_results
+                addTextView("Total results=${totalResults.toString()}")
+                response.body()?.results?.books?.forEach {
+                    addTextView("${it.rank} | ${it.title}")
                 }
 
-                override fun onResponse(call: Call<NetworkResult>, response: Response<NetworkResult>) {
-                    loading.visibility =  View.GONE
-//                    click_me_button.visibility  = View.GONE
-                    addTextView("status code ${response.code()}")
-                    val totalResults = response.body()?.num_results
-                    addTextView("Total results=${totalResults.toString()}")
-                    response.body()?.results?.books?.forEach {
-                        addTextView("${it.rank} | ${it.title}")
-                    }
+            }
 
-                }
 
-            })
-//        }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu to use in the action bar
         val inflater = menuInflater
         inflater.inflate(R.menu.action_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun addTextView(label: String) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_refresh -> {
+                loading.visibility = View.VISIBLE
+                newRequest()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun addTextView(label: String) {
         val view = TextView(this)
         view.text = label
         view.textSize = 22f
@@ -83,3 +89,5 @@ val request = NetworkRequest()
         linearLayout.addView(view)
     }
 }
+
+
