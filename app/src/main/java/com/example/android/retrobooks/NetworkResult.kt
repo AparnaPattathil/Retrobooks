@@ -12,5 +12,5 @@ data class NetworkResult(val status:String, val num_results:Int, val results:Lis
 data class ListResult(val list_name:String, val books: List<Book>)
 
 @JsonClass(generateAdapter = true)
-data class Book(val rank: Int, val title:String)
+data class Book(val title:String)
 

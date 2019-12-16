@@ -9,6 +9,8 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,28 +18,42 @@ import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var container: LinearLayout
-
+    val booksList: ArrayList<String> = ArrayList()
+    private lateinit var layoutManager: RecyclerView.LayoutManager
+//    private lateinit var container: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        booksList.add("Android MVP Introduction")
+        booksList.add("Learn RxJava")
+        booksList.add("Advance Kotlin")
+        layoutManager = LinearLayoutManager(this)
+
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = BookAdapter(this, booksList)
+
+
         val actionBar = supportActionBar
         actionBar!!.title = "Retro Books"
 
-        loading.visibility = View.VISIBLE
+//        val rv = findViewById<RecyclerView>(R.id.recyclerView1)
+//        rv.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+//        adapter = BookAdapter(bookList)
+//        recyclerView1.adazpter = adapter
 
-        container = findViewById(R.id.linearLayout)
-        newRequest()
+//        loading.visibility = View.VISIBLE
+
+//        container = findViewById(R.id.linearLayout)
+//        newRequest()
 
     }
 
     fun newRequest() {
         val request = NetworkRequest()
         val call: Call<NetworkResult> = request.bookService.requestBooks()
-        loading.visibility = View.VISIBLE
+//        loading.visibility = View.VISIBLE
 
         call.enqueue(object : Callback<NetworkResult> {
 
@@ -48,13 +64,18 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<NetworkResult>, response: Response<NetworkResult>) {
-                loading.visibility =View.GONE
-                addTextView("status code ${response.code()}")
-                val totalResults = response.body()?.num_results
-                addTextView("Total results=${totalResults.toString()}")
+//                loading.visibility =View.GONE
+//                addTextView("status code ${response.code()}")
+
+//                val totalResults = response.body()?.num_results
+//                addTextView("Total results=${totalResults.toString()}")
+//                val books = ArrayList<Book>()
+
                 response.body()?.results?.books?.forEach {
-                    addTextView("${it.rank} | ${it.title}")
+//                    addTextView("${it.rank} | ${it.title}")
+                   booksList.add(it.title)
                 }
+
 
             }
 
@@ -71,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_refresh -> {
-                loading.visibility = View.VISIBLE
+//                loading.visibility = View.VISIBLE
                 newRequest()
                 true
             }
@@ -79,14 +100,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun addTextView(label: String) {
-        val view = TextView(this)
-        view.text = label
-        view.textSize = 22f
-
-        view.setTextColor(Color.parseColor("#ffaa00"))
-        linearLayout.addView(view)
-    }
+//    fun addTextView(label: String) {
+//        val view = TextView(this)
+//        view.text = label
+//        view.textSize = 22f
+//
+//        view.setTextColor(Color.parseColor("#ffaa00"))
+////        linearLayout.addView(view)
+//    }
 }
 
 
