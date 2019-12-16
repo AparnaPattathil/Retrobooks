@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     fun newRequest() {
         val request = NetworkRequest()
         val call: Call<NetworkResult> = request.bookService.requestBooks()
+        loading.visibility = View.VISIBLE
 
         call.enqueue(object : Callback<NetworkResult> {
 
