@@ -5,37 +5,42 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 class MainActivity : AppCompatActivity() {
+    private val network = NetworkStack()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+        recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = BookAdapter(this)
 
         supportActionBar?.title = "Retro Books"
 
-        newRequest()
+        requestBooks()
 
     }
 
-    fun newRequest() {
-        val request = NetworkRequest()
-        val call: Call<NetworkResult> = request.bookService.requestBooks()
+    private fun requestBooks() {
+
+        val call: Call<NetworkResult> = network.bookService.requestBooks()
 
         call.enqueue(object : Callback<NetworkResult> {
 
             override fun onFailure(call: Call<NetworkResult>, t: Throwable) {
+                Toast.makeText(this@MainActivity, t.localizedMessage, Toast.LENGTH_LONG).show()
 
                 Log.d("error", t.localizedMessage)
 
@@ -54,8 +59,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.action_menu, menu)
+        menuInflater.inflate(R.menu.action_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -64,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_refresh -> {
                 loading.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
-                newRequest()
+                requestBooks()
                 true
             }
             else -> super.onOptionsItemSelected(item)
